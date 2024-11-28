@@ -6,9 +6,13 @@ import DashboardLayout from "./components/DashboardLayout"; // Updated import
 import ManageUsers from "./pages/ManageUsers";
 import DisplayRecords from "./pages/DisplayRecords";
 import Reports from "./pages/Reports";
+import Add from "./components/Add";
+import { useState } from "react";
 
-function App() {
-  return (
+
+const App = () => {
+  
+    return (
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
@@ -21,7 +25,7 @@ function App() {
         </Route>
       </Routes>
     </Router>
-  );
-}
+    )
+};
 
 export default App;
