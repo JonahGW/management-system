@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import { createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../config/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -9,18 +12,47 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Perform registration logic here
-    console.log("Registered with:", { name, organization, role, email, password });
-    navigate("/login");
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(auth,email, password);
+      const user = userCredentials.user;
+      console.log("Checkpoint");
+      //Add user details in firestore
+      const userDocRef = doc(db, 'Users',user.uid);
+      await setDoc(userDocRef, {
+        Email: user.email,
+        Name: name,
+        Role: role,
+        Organization: organization,
+        CreatedAt: new Date()
+      });
+
+      console.log("User added Successfully");
+      navigate("/dashboard")
+      
+    }catch(error){
+      alert(error.message);
+    }
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const email = user.email;
+    alert("Welcome to Momabsa Maize Millers Dashboard!");
+    navigate("/dashboard");
+  } 
+  });
+  }, []);
+  
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Register</h2>
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <form  style={styles.form}>
           <input
             type="text"
             placeholder="Name"
@@ -62,7 +94,7 @@ function RegisterPage() {
             style={styles.input}
             required
           />
-          <button type="submit" style={styles.submitButton}>
+          <button type="submit" onClick={handleSubmit} style={styles.submitButton}>
             Register
           </button>
         </form>

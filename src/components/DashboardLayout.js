@@ -1,8 +1,20 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FaUsers, FaClipboardList, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa"; // Import additional icons
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../config/firebase";
 
 function DashboardLayout() {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    navigate("/");
+  } 
+  });
+  }, []);
+  
   return (
     <div style={styles.container}>
       {/* Sidebar */}

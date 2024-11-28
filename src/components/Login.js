@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { auth, db } from "../config/firebase";
+import { Await, useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -7,28 +11,28 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); // To display error messages if login fails
 
-  const handleSubmit = (e) => {
+  const handleLogin = async(e) => {
     e.preventDefault();
-
-    // Simulate a login process (hardcoded credentials for demonstration)
-    const validEmail = "user@example.com"; // Replace with your email validation
-    const validPassword = "password123"; // Replace with your password validation
-
-    if (email === validEmail && password === validPassword) {
-      // If credentials are correct, redirect to the dashboard
-      setError(""); // Clear any previous errors
+    await signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
       navigate("/dashboard");
-    } else {
-      // If login fails, display an error message
-      setError("Invalid email or password.");
-    }
+      // Signed in 
+      const user = userCredential.user;
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
   };
+   
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>Login</h2>
-        <form onSubmit={handleSubmit} style={styles.form}>
+        <handleSignup />
+        <form style={styles.form}>
           <input
             type="email"
             placeholder="Email"
@@ -45,8 +49,9 @@ function LoginPage() {
             style={styles.input}
             required
           />
-          {error && <p style={styles.error}>{error}</p>}
-          <button type="submit" style={styles.submitButton}>
+
+          {/* {error && <p style={styles.error}>{error}</p>} */}
+          <button type="submit" onClick={handleLogin} style={styles.submitButton}>
             Login
           </button>
         </form>
