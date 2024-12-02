@@ -1,20 +1,29 @@
 import React, { useEffect } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import { FaUsers, FaClipboardList, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa"; // Import additional icons
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { FaUsers, FaClipboardList, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
 
 function DashboardLayout() {
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    navigate("/");
-  } 
-  });
-  }, []);
-  
+      if (!user) {
+        navigate("/"); // Redirect to login if the user is not authenticated
+      }
+    });
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut(); // Log out the user
+      navigate("/"); // Redirect to the login page
+    } catch (error) {
+      console.error("Error logging out:", error.message);
+    }
+  };
+
   return (
     <div style={styles.container}>
       {/* Sidebar */}
@@ -22,57 +31,60 @@ function DashboardLayout() {
         <h2 style={styles.sidebarTitle}>Admin Dashboard</h2>
         <ul style={styles.menu}>
           <li style={styles.menuItem}>
-            <Link to="/manage-users" style={styles.link}>
+            <NavLink
+              to="manage-users"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#34495e" : "transparent",
+              })}
+            >
               <FaUsers style={styles.icon} /> Manage Users
-            </Link>
+            </NavLink>
           </li>
           <li style={styles.menuItem}>
-            <Link to="/display-records" style={styles.link}>
+            <NavLink
+              to="display-records"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#34495e" : "transparent",
+              })}
+            >
               <FaClipboardList style={styles.icon} /> Display Records
-            </Link>
+            </NavLink>
           </li>
           <li style={styles.menuItem}>
-            <Link to="/reports" style={styles.link}>
+            <NavLink
+              to="reports"
+              style={({ isActive }) => ({
+                ...styles.link,
+                backgroundColor: isActive ? "#34495e" : "transparent",
+              })}
+            >
               <FaChartBar style={styles.icon} /> Reports
-            </Link>
+            </NavLink>
           </li>
         </ul>
 
         {/* Footer links with icons */}
         <div style={styles.footer}>
-          <Link to="/settings" style={styles.link}>
+          <NavLink
+            to="settings"
+            style={({ isActive }) => ({
+              ...styles.link,
+              backgroundColor: isActive ? "#34495e" : "transparent",
+            })}
+          >
             <FaCog style={styles.icon} /> Settings
-          </Link>
-          <Link to="/logout" style={styles.link}>
+          </NavLink>
+          <button onClick={handleLogout} style={{ ...styles.link, ...styles.logoutButton }}>
             <FaSignOutAlt style={styles.icon} /> Logout
-          </Link>
+          </button>
         </div>
       </div>
 
       {/* Main Content */}
       <div style={styles.mainContent}>
-        <h1 style={styles.mainTitle}>Welcome to the Admin Dashboard</h1>
-
-        {/* Cards Section */}
-        <div style={styles.cardsContainer}>
-          <div style={styles.card}>
-            <FaUsers size={50} style={styles.cardIcon} />
-            <h3>Manage Users</h3>
-            <p>Create, update, or delete users in the system.</p>
-          </div>
-          <div style={styles.card}>
-            <FaClipboardList size={50} style={styles.cardIcon} />
-            <h3>Display Records</h3>
-            <p>View and manage all recorded data.</p>
-          </div>
-          <div style={styles.card}>
-            <FaChartBar size={50} style={styles.cardIcon} />
-            <h3>Generate Reports</h3>
-            <p>Generate and analyze reports based on system data.</p>
-          </div>
-        </div>
-
-        <Outlet /> {/* Render nested routes like ManageUsers, DisplayRecords, etc. */}
+        <Outlet /> {/* Render nested routes dynamically */}
       </div>
     </div>
   );
@@ -85,13 +97,13 @@ const styles = {
   sidebar: {
     width: "250px",
     height: "100vh",
-    backgroundColor: "#2c3e50", // Darker background color for sidebar
-    color: "white", // Text color for the sidebar
+    backgroundColor: "#2c3e50",
+    color: "white",
     padding: "20px",
     boxShadow: "2px 0px 5px rgba(0, 0, 0, 0.1)",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between", // Ensures footer links stick to the bottom
+    justifyContent: "space-between",
   },
   sidebarTitle: {
     fontSize: "20px",
@@ -107,49 +119,38 @@ const styles = {
   },
   link: {
     textDecoration: "none",
-    color: "white", // Ensures link text is white in the sidebar
+    color: "white",
     fontSize: "16px",
     fontWeight: "500",
     display: "flex",
     alignItems: "center",
     gap: "10px",
+    padding: "10px",
+    borderRadius: "5px",
+    cursor: "pointer",
   },
   icon: {
-    color: "white", // Icon color for links in sidebar
+    color: "white",
   },
   footer: {
-    marginTop: "auto", // Pushes footer links to the bottom
+    marginTop: "auto",
   },
   mainContent: {
     padding: "20px",
     flex: "1",
     backgroundColor: "#ffffff",
   },
-  mainTitle: {
-    fontSize: "24px",
-    marginBottom: "20px",
-    fontWeight: "bold",
-  },
-  cardsContainer: {
+  logoutButton: {
+    background: "none",
+    border: "none",
+    padding: "0",
+    fontSize: "16px",
+    fontWeight: "500",
     display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    flexWrap: "wrap",
-    marginBottom: "40px",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-    padding: "20px",
-    width: "30%",
-    textAlign: "center",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    alignItems: "center",
+    gap: "10px",
     cursor: "pointer",
-  },
-  cardIcon: {
-    color: "#4CAF50",
-    marginBottom: "10px",
+    color: "white",
   },
 };
 
