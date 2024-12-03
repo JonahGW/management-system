@@ -41,6 +41,7 @@ function DashboardLayout() {
               <FaUsers style={styles.icon} /> Manage Users
             </NavLink>
           </li>
+          
           <li style={styles.menuItem}>
             <NavLink
               to="display-records"
@@ -140,7 +141,7 @@ const styles = {
     flex: "1",
     backgroundColor: "#ffffff",
   },
-  logoutButton: {
+  logoutButton: { 
     background: "none",
     border: "none",
     padding: "0",

@@ -1,14 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-import {  getAuth } from "firebase/auth";
+import { getFirestore, doc, getDoc } from "firebase/firestore"; // To access Firestore
+import { getAuth, onAuthStateChanged } from "firebase/auth"; // For authentication
 import { getStorage } from "firebase/storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyCFcT1OjGwaYRNCEG40_o3mcmUdd-6A4xg",
   authDomain: "maizemillersadmin.firebaseapp.com",
@@ -21,8 +17,31 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
 
+// Initialize Firestore, Storage, and Authentication services
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
+
+// Function to fetch user role from Firestore based on UID
+export const getUserRole = async (userUid) => {
+  try {
+    const userDocRef = doc(db, "users", userUid); // Access user data from 'users' collection
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+      return userDoc.data().role; // Return the role field from the user document
+    } else {
+      console.log("No user data found");
+      return null; // If no data is found
+    }
+  } catch (error) {
+    console.error("Error fetching user role: ", error);
+    return null;
+  }
+};
+
+// Function to check the authentication state
+export const checkAuthState = (callback) => {
+  onAuthStateChanged(auth, callback); // Callback to handle state changes (user login/logout)
+};

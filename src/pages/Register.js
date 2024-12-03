@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../config/firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
-function LoginPage() {
+function RegisterPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    organization: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+  });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -13,30 +20,54 @@ function LoginPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const { email, password } = formData;
+    const { name, email, organization, password, confirmPassword, role } = formData;
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("Login successful");
-      navigate("/dashboard");
+      await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Registration successful");
+      // Additional logic for saving user info like name, organization, and role can be added here
+      navigate("/login");
     } catch (error) {
-      setError("Invalid email or password");
-      console.error("Login error:", error.message);
+      setError("Error registering: " + error.message);
+      console.error("Registration error:", error.message);
     }
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>Login</h2>
-        <form style={styles.form} onSubmit={handleLogin}>
+        <h2 style={styles.title}>Register</h2>
+        <form style={styles.form} onSubmit={handleRegister}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
           <input
             type="email"
             name="email"
             placeholder="Email"
             value={formData.email}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+          <input
+            type="text"
+            name="organization"
+            placeholder="Organization"
+            value={formData.organization}
             onChange={handleChange}
             style={styles.input}
             required
@@ -50,15 +81,33 @@ function LoginPage() {
             style={styles.input}
             required
           />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+          <input
+            type="text"
+            name="role"
+            placeholder="Role"
+            value={formData.role}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
           {error && <p style={styles.error}>{error}</p>}
           <button type="submit" style={styles.submitButton}>
-            Login
+            Register
           </button>
         </form>
         <p style={styles.redirect}>
-          Don't have an account?{" "}
-          <span style={styles.link} onClick={() => navigate("/register")}>
-            Register here
+          Already have an account?{" "}
+          <span style={styles.link} onClick={() => navigate("/login")}>
+            Login here
           </span>
         </p>
       </div>
@@ -134,4 +183,4 @@ const styles = {
   },
 };
 
-export default LoginPage;
+export default RegisterPage;
