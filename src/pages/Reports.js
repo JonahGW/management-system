@@ -43,7 +43,7 @@ function Reports() {
 
   return (  
     <div style={styles.container}>  
-      <h2 style={styles.title}>View Reports</h2>   
+      <h2 style={styles.title}>View Reports</h2> 
 
       {/* Table for displaying reports */}  
       <table style={styles.table}>  
@@ -136,8 +136,8 @@ const styles = {
     zIndex: 1000,  
     left: 0,  
     top: 0,  
-    width: "100%",  
-    height: "100%",  
+    width: "100vw",  
+    height: "100vh",  
     overflow: "auto",  
     backgroundColor: "rgba(0, 0, 0, 0.5)",  
   },  

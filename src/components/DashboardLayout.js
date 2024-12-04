@@ -51,11 +51,11 @@ const styles = {
   },
   mainContent: {
     padding: "20px",
-    flex: "1",
+    flex: "2",
     backgroundColor: "#ffffff",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   defaultView: {
     textAlign: "center",
