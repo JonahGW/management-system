@@ -1,11 +1,112 @@
 import React, { useEffect } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { FaUsers, FaClipboardList, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
 
+const styles = {
+  container: {
+    display: "flex",
+  },
+  sidebar: {
+    width: "250px",
+    height: "100vh",
+    backgroundColor: "#2c3e50",
+    color: "white",
+    padding: "20px",
+    boxShadow: "2px 0px 5px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  sidebarTitle: {
+    fontSize: "20px",
+    marginBottom: "20px",
+    fontWeight: "bold",
+  },
+  menu: {
+    listStyle: "none",
+    padding: 0,
+  },
+  menuItem: {
+    margin: "10px 0",
+  },
+  link: {
+    textDecoration: "none",
+    color: "white",
+    fontSize: "16px",
+    fontWeight: "500",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "10px",
+    borderRadius: "5px",
+    cursor: "pointer",
+  },
+  icon: {
+    color: "white",
+  },
+  footer: {
+    marginTop: "auto",
+  },
+  mainContent: {
+    padding: "20px",
+    flex: "1",
+    backgroundColor: "#ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  defaultView: {
+    textAlign: "center",
+    color: "#34495e",
+    width: "100%",
+  },
+  cards: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: "40px",
+    width: "80%",
+    margin: "0 auto",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  card: {
+    width: "250px",
+    height: "250px",
+    backgroundColor: "#ecf0f1",
+    borderRadius: "20px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 5px 10px rgba(0, 0, 0, 0.1)",
+    cursor: "pointer",
+    transition: "transform 0.3s, box-shadow 0.3s",
+    textAlign: "center",
+  },
+  cardIcon: {
+    fontSize: "50px",
+    marginBottom: "20px",
+    color: "#2c3e50",
+  },
+  logoutButton: {
+    background: "none",
+    border: "none",
+    padding: "0",
+    fontSize: "16px",
+    fontWeight: "500",
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    cursor: "pointer",
+    color: "white",
+  },
+};
+
 function DashboardLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -23,6 +124,8 @@ function DashboardLayout() {
       console.error("Error logging out:", error.message);
     }
   };
+
+  const isDashboardHome = location.pathname === "/dashboard";
 
   return (
     <div style={styles.container}>
@@ -76,7 +179,7 @@ function DashboardLayout() {
           >
             <FaCog style={styles.icon} /> Settings
           </NavLink>
-          <button onClick={handleLogout} style={{ ...styles.link, ...styles.logoutButton }}>
+          <button onClick={handleLogout} style={styles.logoutButton}>
             <FaSignOutAlt style={styles.icon} /> Logout
           </button>
         </div>
@@ -84,74 +187,39 @@ function DashboardLayout() {
 
       {/* Main Content */}
       <div style={styles.mainContent}>
-        <Outlet /> {/* Render nested routes dynamically */}
+        {isDashboardHome ? (
+          <div style={styles.defaultView}>
+            <h1>Welcome to Admin Dashboard</h1>
+            <div style={styles.cards}>
+              <div
+                style={styles.card}
+                onClick={() => navigate("/dashboard/manage-users")}
+              >
+                <FaUsers style={styles.cardIcon} />
+                <p>Manage Users</p>
+              </div>
+              <div
+                style={styles.card}
+                onClick={() => navigate("/dashboard/display-records")}
+              >
+                <FaClipboardList style={styles.cardIcon} />
+                <p>Display Records</p>
+              </div>
+              <div
+                style={styles.card}
+                onClick={() => navigate("/dashboard/reports")}
+              >
+                <FaChartBar style={styles.cardIcon} />
+                <p>Reports</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-  },
-  sidebar: {
-    width: "250px",
-    height: "100vh",
-    backgroundColor: "#2c3e50",
-    color: "white",
-    padding: "20px",
-    boxShadow: "2px 0px 5px rgba(0, 0, 0, 0.1)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  sidebarTitle: {
-    fontSize: "20px",
-    marginBottom: "20px",
-    fontWeight: "bold",
-  },
-  menu: {
-    listStyle: "none",
-    padding: 0,
-  },
-  menuItem: {
-    margin: "10px 0",
-  },
-  link: {
-    textDecoration: "none",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: "500",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    padding: "10px",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-  icon: {
-    color: "white",
-  },
-  footer: {
-    marginTop: "auto",
-  },
-  mainContent: {
-    padding: "20px",
-    flex: "1",
-    backgroundColor: "#ffffff",
-  },
-  logoutButton: {
-    background: "none",
-    border: "none",
-    padding: "0",
-    fontSize: "16px",
-    fontWeight: "500",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    cursor: "pointer",
-    color: "white",
-  },
-};
 
 export default DashboardLayout;
