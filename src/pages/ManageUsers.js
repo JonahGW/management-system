@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../config/firebase";
-import { collection, getDocs, deleteDoc, doc, updateDoc, addDoc } from "firebase/firestore";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Box } from "@mui/material";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  addDoc,
+} from "firebase/firestore";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Box,
+} from "@mui/material";
 
 function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -12,15 +30,19 @@ function ManageUsers() {
     Email: "",
     Role: "",
     Organization: "",
-    Password: "", // Add Password Field
+    Password: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchUsers = async () => {
     try {
       const usersCollection = collection(db, "Users");
       const userSnapshot = await getDocs(usersCollection);
-      const userList = userSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      const userList = userSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setUsers(userList);
     } catch (error) {
       console.error("Error fetching users:", error.message);
@@ -39,7 +61,7 @@ function ManageUsers() {
 
   const handleEdit = (user) => {
     setEditUserId(user.id);
-    setEditData({ ...user }); // Set data for editing
+    setEditData({ ...user });
   };
 
   const handleChange = (e) => {
@@ -57,10 +79,16 @@ function ManageUsers() {
       const usersCollection = collection(db, "Users");
       const userToAdd = {
         ...newUser,
-        Password: newUser.Password || generatePassword(), // Use generated or input password
+        Password: newUser.Password || generatePassword(),
       };
       await addDoc(usersCollection, userToAdd);
-      setNewUser({ Name: "", Email: "", Role: "", Organization: "", Password: "" });
+      setNewUser({
+        Name: "",
+        Email: "",
+        Role: "",
+        Organization: "",
+        Password: "",
+      });
       setShowAddForm(false);
       fetchUsers();
     } catch (error) {
@@ -72,7 +100,7 @@ function ManageUsers() {
     try {
       const userRef = doc(db, "Users", editUserId);
       await updateDoc(userRef, editData);
-      setEditUserId(null); // Close the edit form
+      setEditUserId(null);
       fetchUsers();
     } catch (error) {
       console.error("Error updating user:", error.message);
@@ -92,15 +120,26 @@ function ManageUsers() {
     fetchUsers();
   }, []);
 
+  const filteredUsers = users.filter((user) =>
+    Object.values(user)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={{ padding: "20px" }}>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        marginBottom="20px"
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
         <h2 style={{ margin: 0, color: "#2c3e50" }}>Manage Users</h2>
+        <Box display="flex" alignItems="center" style={{ flexGrow: 1, justifyContent: "center" }}>
+          <TextField
+            placeholder="Search users..."
+            variant="outlined"
+            size="small"
+            style={{ width: "300px" }}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Box>
         <Button
           variant="contained"
           color="primary"
@@ -203,28 +242,16 @@ function ManageUsers() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Name</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Email</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Role</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Organization</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Password</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Actions</strong>
-              </TableCell>
+              <TableCell><strong>Name</strong></TableCell>
+              <TableCell><strong>Email</strong></TableCell>
+              <TableCell><strong>Role</strong></TableCell>
+              <TableCell><strong>Organization</strong></TableCell>
+              <TableCell><strong>Password</strong></TableCell>
+              <TableCell><strong>Actions</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.Name}</TableCell>
                 <TableCell>{user.Email}</TableCell>
