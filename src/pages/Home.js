@@ -8,20 +8,24 @@ function Homepage() {
     <div style={styles.container}>
       {/* Introduction Section */}
       <header style={styles.header}>
-        <h1>Welcome to Maize Millers Dashboard</h1>
-        <p>
+        <h1 style={styles.heading}>Welcome to Maize Millers Dashboard</h1>
+        <p style={styles.subheading}>
           Track and manage the weight of your maize bags with efficiency and precision.
         </p>
       </header>
 
-      {/* Login and Register Buttons */}
+      {/* Action Buttons Section */}
       <div style={styles.actionContainer}>
-        <button style={styles.actionButton} onClick={() => navigate("/login")}>
-          Login
-        </button>
-        <button style={styles.actionButton} onClick={() => navigate("/register")}>
-          Register
-        </button>
+        <div style={styles.buttonCard}>
+          <button style={styles.actionButton} onClick={() => navigate("/login")}>
+            Login
+          </button>
+        </div>
+        <div style={styles.buttonCard}>
+          <button style={styles.actionButton} onClick={() => navigate("/register")}>
+            Register
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -30,22 +34,44 @@ function Homepage() {
 const styles = {
   container: {
     fontFamily: "Poppins, sans-serif",
-    padding: "20px",
+    padding: "40px 20px",
     textAlign: "center",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#f3f8f8",
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    backgroundImage: "url('https://www.example.com/your-image.jpg')", // Example background image
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   },
   header: {
-    marginBottom: "30px",
+    marginBottom: "40px",
+    color: "#2c3e50",
+  },
+  heading: {
+    fontSize: "36px",
+    fontWeight: "bold",
+    color: "#2c3e50",
+  },
+  subheading: {
+    fontSize: "18px",
+    color: "#34495e",
+    marginTop: "10px",
+    lineHeight: "1.5",
   },
   actionContainer: {
-    marginTop: "20px",
+    marginTop: "30px",
     display: "flex",
     justifyContent: "center",
-    gap: "20px",
+    gap: "30px",
+  },
+  buttonCard: {
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
   },
   actionButton: {
     backgroundColor: "#28a745",
@@ -55,7 +81,8 @@ const styles = {
     fontSize: "16px",
     borderRadius: "5px",
     cursor: "pointer",
-    transition: "background-color 0.3s ease",
+    transition: "background-color 0.3s ease, transform 0.3s ease",
+    width: "200px",
   },
   actionButtonHover: {
     backgroundColor: "#218838",
