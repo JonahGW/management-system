@@ -7,6 +7,7 @@ import ManageUsers from "./pages/ManageUsers"; // Page rendered inside dashboard
 import DisplayRecords from "./pages/DisplayRecords"; // Page rendered inside dashboard
 import Reports from "./pages/Reports"; // Page rendered inside dashboard
 import EditUser from "./pages/EditUser"; // Edit user
+import Settings from "./pages/Settings"; // Settings component
 
 const App = () => {
   return (
@@ -20,9 +21,10 @@ const App = () => {
         {/* Dashboard Routes */}
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route path="manage-users" element={<ManageUsers />} />
-          <Route path="manage-users/edit/:id" element={<EditUser />} />  {/* Edit user by ID */}
+          <Route path="manage-users/edit/:id" element={<EditUser />} /> {/* Edit user by ID */}
           <Route path="display-records" element={<DisplayRecords />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} /> {/* New Settings Route */}
         </Route>
       </Routes>
     </Router>

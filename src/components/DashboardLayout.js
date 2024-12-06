@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
-import { FaUsers, FaClipboardList, FaChartBar, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUsers, FaClipboardList, FaChartBar, FaSignOutAlt } from "react-icons/fa";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
 
@@ -43,9 +43,30 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
   },
-  icon: {
+  profileContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    cursor: "pointer",
+    textDecoration: "none",
     color: "white",
   },
+  profilePhoto: {
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    objectFit: "cover",
+  },
+  onlineDot: {
+    width: "10px",
+    height: "10px",
+    borderRadius: "50%",
+    position: "absolute",
+    bottom: "5px",
+    right: "5px",
+  },
+  online: { backgroundColor: "green" },
+  offline: { backgroundColor: "red" },
   footer: {
     marginTop: "auto",
   },
@@ -54,8 +75,6 @@ const styles = {
     flex: "2",
     backgroundColor: "#ffffff",
     display: "flex",
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   defaultView: {
     textAlign: "center",
@@ -105,21 +124,40 @@ const styles = {
 };
 
 function DashboardLayout() {
+  const [profilePhoto, setProfilePhoto] = useState(""); // Placeholder for profile photo URL
+  const [isOnline, setIsOnline] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    // Check Firebase auth state
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        navigate("/"); // Redirect to login if the user is not authenticated
+      if (user) {
+        setIsOnline(true);
+        if (user.photoURL) {
+          setProfilePhoto(user.photoURL);
+        }
+      } else {
+        navigate("/");
       }
     });
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
   }, [navigate]);
 
   const handleLogout = async () => {
     try {
-      await auth.signOut(); // Log out the user
-      navigate("/"); // Redirect to the login page
+      await auth.signOut();
+      navigate("/");
     } catch (error) {
       console.error("Error logging out:", error.message);
     }
@@ -141,7 +179,7 @@ function DashboardLayout() {
                 backgroundColor: isActive ? "#34495e" : "transparent",
               })}
             >
-              <FaUsers style={styles.icon} /> Manage Users
+              <FaUsers /> Manage Users
             </NavLink>
           </li>
           <li style={styles.menuItem}>
@@ -152,7 +190,7 @@ function DashboardLayout() {
                 backgroundColor: isActive ? "#34495e" : "transparent",
               })}
             >
-              <FaClipboardList style={styles.icon} /> Display Records
+              <FaClipboardList /> Display Records
             </NavLink>
           </li>
           <li style={styles.menuItem}>
@@ -163,24 +201,31 @@ function DashboardLayout() {
                 backgroundColor: isActive ? "#34495e" : "transparent",
               })}
             >
-              <FaChartBar style={styles.icon} /> Reports
+              <FaChartBar /> Reports
             </NavLink>
           </li>
         </ul>
 
-        {/* Footer links with icons */}
+        {/* Footer links with profile photo */}
         <div style={styles.footer}>
-          <NavLink
-            to="settings"
-            style={({ isActive }) => ({
-              ...styles.link,
-              backgroundColor: isActive ? "#34495e" : "transparent",
-            })}
-          >
-            <FaCog style={styles.icon} /> Settings
+          <NavLink to="settings" style={styles.profileContainer}>
+            <div style={{ position: "relative" }}>
+              <img
+                src={profilePhoto || "https://via.placeholder.com/40"} // Fallback image
+                alt="Profile"
+                style={styles.profilePhoto}
+              />
+              <div
+                style={{
+                  ...styles.onlineDot,
+                  ...(isOnline ? styles.online : styles.offline),
+                }}
+              />
+            </div>
+            <span>Settings</span>
           </NavLink>
           <button onClick={handleLogout} style={styles.logoutButton}>
-            <FaSignOutAlt style={styles.icon} /> Logout
+            <FaSignOutAlt /> Logout
           </button>
         </div>
       </div>
