@@ -19,7 +19,7 @@ function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log("Login successful");
+      console.log("Login successful", );
       navigate("/dashboard");
     } catch (error) {
       setError("Invalid email or password");
