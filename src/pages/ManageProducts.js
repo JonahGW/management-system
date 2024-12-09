@@ -89,61 +89,54 @@ const ManageProducts = () => {
     <div style={{ padding: '20px' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
         <h2 style={{ margin: 0, color: '#2c3e50' }}>Manage Products</h2>
-        <form onSubmit={handleAddProduct}>
-          <Button type="submit" variant="contained" style={{ backgroundColor: '#2196F3', color: 'white' }}>
-            Add Product
-          </Button>
-        </form>
       </Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
+      <Box display="flex" alignItems="center" marginBottom="20px">
         <TextField
           label="Search Products"
           variant="outlined"
           value={searchQuery}
           onChange={handleSearch}
-          style={{ marginRight: '10px' }}
+          style={{ marginRight: '10px', flex: 1 }}
         />
         <Button variant="contained" style={{ backgroundColor: '#2196F3', color: 'white' }}>
           Search
         </Button>
       </Box>
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <Box component="form" style={{ marginBottom: '20px' }}>
+      <Box component="form" display="flex" flexWrap="wrap" gap="10px" alignItems="center" onSubmit={handleAddProduct} style={{ marginBottom: '20px' }}>
         <TextField
           label="Product Name"
           name="name"
           value={newProduct.name}
           onChange={handleInputChange}
-          style={{ marginRight: '10px' }}
         />
         <TextField
           label="Product Price(Ksh)"
           name="price"
           value={newProduct.price}
           onChange={handleInputChange}
-          style={{ marginRight: '10px' }}
         />
         <TextField
           label="Product Weight (kg)"
           name="weight"
           value={newProduct.weight}
           onChange={handleInputChange}
-          style={{ marginRight: '10px' }}
         />
         <TextField
           label="Product Code"
           name="code"
           value={newProduct.code}
           onChange={handleInputChange}
-          style={{ marginRight: '10px' }}
         />
         <TextField
           label="Product Type"
           name="type"
           value={newProduct.type}
           onChange={handleInputChange}
-          style={{ marginTop: '10px' }}
         />
+        <Button type="submit" variant="contained" style={{ backgroundColor: '#2196F3', color: 'white' }}>
+          Add Product
+        </Button>
       </Box>
       <TableContainer component={Paper}>
         <Table>
@@ -186,6 +179,9 @@ const ManageProducts = () => {
 };
 
 export default ManageProducts;
+
+
+
 
 
 
