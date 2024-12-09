@@ -116,13 +116,13 @@ function DisplayRecords() {
         </form>
       </Box>
 
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
+      <Box display="flex" alignItems="center" marginBottom="20px">
         <TextField
           label="Search Records"
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
-          style={{ marginRight: '10px' }}
+          style={{ marginRight: '10px', flex: 1 }}
         />
         <Button variant="contained" style={{ backgroundColor: '#2196F3', color: 'white' }}>
           Search
@@ -198,6 +198,7 @@ function DisplayRecords() {
 }
 
 export default DisplayRecords;
+
 
 /*import React, { useState } from "react";
 import { FaEye, FaTrashAlt } from "react-icons/fa"; // Icons for viewing and deleting records

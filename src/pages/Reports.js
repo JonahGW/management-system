@@ -68,13 +68,13 @@ function Reports() {
       <h2 style={styles.title}>View Reports</h2>
 
       {/* Search section */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
+      <Box display="flex" alignItems="center" marginBottom="20px">
         <TextField
           label="Search Reports"
           variant="outlined"
           value={searchQuery}
           onChange={handleSearchChange}
-          style={{ marginRight: '10px' }}
+          style={{ marginRight: '10px', flex: 1 }}
         />
         <Button variant="contained" style={{ backgroundColor: '#2196F3', color: 'white' }}>
           Search
@@ -209,6 +209,7 @@ const styles = {
 };
 
 export default Reports;
+
 
 /*import React, { useState } from "react";  
 import { FaFileDownload, FaChartLine } from "react-icons/fa"; // Icons for downloading and charts  
