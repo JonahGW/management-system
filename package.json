@@ -6,11 +6,7 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.10",
-<<<<<<< HEAD
     "@mui/material": "^6.1.10",
-=======
-    "@mui/material": "^6.1.9",
->>>>>>> 93bb27c349237d90e4e7e002f3fed94017b49e57
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -52,3 +48,4 @@
     ]
   }
 }
+
